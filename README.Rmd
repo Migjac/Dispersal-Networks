@@ -30,10 +30,12 @@ matas<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/matas_visit.csv"
 &nbsp;
 
 ####**Step 2.** Using "bipartite" package
+&nbsp;
 
 ```
 library(bipartite)
 ```
+&nbsp;
 
 ```{r, message=F, cache=F, echo=F, include = FALSE}
 library(bipartite)
@@ -56,7 +58,9 @@ plotweb(matas, col.low=c(gray(seq(0.1,1,length=42))), col.high=c("white","white"
 
 &nbsp;
 
-####**Step 3.** Calculate different indexes of a network.
+####**Step 3.** Calculate indices describing network topography. 
+
+There are three different levels this can be achieved at: the entire web (using function networklevel), at the level of each group (also using function networklevel) or the individual species (using function specieslevel).
 
 * **Closeness** scores for nodes in a weighted network based on the distance_w-function.
 
@@ -66,6 +70,13 @@ plotweb(matas, col.low=c(gray(seq(0.1,1,length=42))), col.high=c("white","white"
 
 * **Link level** computes the contribution of each species to the overall nestedness.
 
+* **Network level** Analysis of bipartite webs at the level of the entire network
+
++ **Connectance:** Realized proportion of possible links. C = L/(IJ). This is the standardized number of species combinations often used in co-occurrence analyses (Gotelli and Graves 1996); also identical to 2-species motifs sensu Milo et al. (2002).
+
++ **Cluster coefficient:** Mean, across all species, of the number of realized links divided by the number of possible links for each species (i.e. average per-species connectance).
+
++ **Web Assymethry:** Balance between numbers in the two levels W = (I– J)/(I+J). Positive numbers indicate more lower-trophic level species, negative more higher-trophic level species; rescaled to [–1, 1] (see Blüthgen et al. 2007).
 
 ```{r, echo=FALSE}
 clos_mart<-closeness_w(mart, gconly=TRUE, precomp.dist=NULL, alpha=1)
@@ -73,13 +84,25 @@ bet_mart<-betweenness_w(mart)
 mod_mart<-computeModules(mart)
 spp_lev_mart<-specieslevel(mart)
 link_lev_mart<-linklevel(mart)
+net_lev_mart<-linklevel(mart)
 
-clos_mart<-closeness_w(matas, gconly=TRUE, precomp.dist=NULL, alpha=1)
-bet_mart<-betweenness_w(matas)
-mod_mart<-computeModules(matas)
-spp_lev_mart<-specieslevel(matas)
-link_lev_mart<-linklevel(matas)
+net_lev_mart
+
+clos_matas<-closeness_w(matas, gconly=TRUE, precomp.dist=NULL, alpha=1)
+bet_matas<-betweenness_w(matas)
+mod_matas<-computeModules(matas)
+spp_lev_matas<-specieslevel(matas)
+link_lev_matas<-linklevel(matas)
+net_lev_matas<-linklevel(matas)
 ```
+#####**Step 3.1.** Ploting modules in the networks
+
+```{r, echo=FALSE}
+par(mfrow=c(1,2))
+plotModuleWeb(mod_mart)
+plotModuleWeb(mod_matas)
+```
+
 &nbsp;
 
 >**Coping the results to my folder in local repository**
