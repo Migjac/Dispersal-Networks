@@ -26,6 +26,10 @@ plotweb(matas_f, col.low=c(gray(seq(0.1,1,length=39))), col.high=c("white","whit
 
 #Centrality measures
 
+#Degree
+specieslevel(mart_f,index="normalised degree")
+specieslevel(matas_f,index="normalised degree")
+
 #Closeness
 specieslevel(mart_f,index="closeness")
 specieslevel(matas_f,index="closeness")
@@ -34,15 +38,19 @@ specieslevel(matas_f,index="closeness")
 specieslevel(mart_f,index="betweenness")
 specieslevel(matas_f,index="betweenness")
 
-#Network level
-networklevel(mart_f)
-mod_mart_f<-computeModules(mart_f)
-linklevel(mart_f)
 
+##Networks analysis. Network topology indexes
+
+networklevel(mart_f)
 networklevel(matas_f)
-specieslevel(matas_f)
+
+#Modularity
+mod_mart_f<-computeModules(mart_f)
 mod_matas_f<-computeModules(matas_f)
-link_lev_matas_f<-linklevel(matas_f)
+
+#Dependence
+linklevel(mart_f)
+linklevel(matas_f)
 
 
 #####**Step 3.1.** Ploting modules in the networks

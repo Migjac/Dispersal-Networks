@@ -60,13 +60,74 @@ plotweb(matas, col.low=c(gray(seq(0.1,1,length=42))), col.high=c("white","white"
 
 ####**Step 3.** Calculate indices describing network topography. 
 
-There are three different levels this can be achieved at: the entire web (using function networklevel), at the level of each group (also using function networklevel) or the individual species (using function specieslevel).
+There are three different levels this can be achieved at: the entire web (using function networklevel), at the level of each group (also using function networklevel) or the individual species (using function specieslevel). One of the best measures in network analysis is the centrality. This index refer to the relative importance of every element to structure the system and there are three measures of closeness useful for us.
 
-* **Closeness** scores for nodes in a weighted network based on the distance_w-function.
+#####**Step 3.1.** Centrality measures
 
-* **Betweenness** scores for nodes in a weighted network based on the distance_w-function.
+* **Relative degree.** Proportion of interactions in relation to the potential partners in the network. Importance with the number of plants or animals with which they interact
 
-* **Species level** describe a species' degree as sum of its links.
+* **Closeness.** Refered to the distance from the species to all other species in the network, mesaured as **degrees of separation**. It`s usally used as a proxy for species niche commoness or funcitonal influence in a network. **How similar their interactions are to the interaction set made by other species.**  
+
+* **Betweenness.** Proportion of small paths (shortest distances measured through direct or inderect connections) between all pair of species in the network. It's used as a proxy for the species for binding different modules or regions of the network. 
+*Note: for multilayer networks refer to how strongly bind different modules in the networks and each layer sparetely.*
+&nbsp;
+```
+spp_lev_mart<-specieslevel(mart)
+spp_lev_mart<-specieslevel(matas)
+```
+
+```{r, message=F, cache=F, echo=F, include = FALSE}
+spp_lev_mart<-specieslevel(mart)
+spp_lev_matas<-specieslevel(matas)
+```
+
+Maritnazo
+```{r,echo=FALSE}
+names(spp_lev_mart$`higher level`)[2]<-"ND"
+names(spp_lev_mart$`higher level`)[11]<-"Betwn"
+names(spp_lev_mart$`higher level`)[12]<-"W.Betwn"
+names(spp_lev_mart$`higher level`)[13]<-"Closn"
+names(spp_lev_mart$`higher level`)[14]<-"W.Closn"
+
+knitr::kable((spp_lev_mart$`higher level`[,c(2,11,12,13,14)]))
+
+```
+
+```{r,echo=FALSE}
+
+names(spp_lev_mart$`lower level`)[2]<-"ND"
+names(spp_lev_mart$`lower level`)[11]<-"Betwn"
+names(spp_lev_mart$`lower level`)[12]<-"W.Betwn"
+names(spp_lev_mart$`lower level`)[13]<-"Closn"
+names(spp_lev_mart$`lower level`)[14]<-"W.Closn"
+knitr::kable((spp_lev_mart$`lower level`[,c(2,11,12,13,14)]))
+
+```
+
+Matasgordas
+```{r,echo=FALSE}
+names(spp_lev_matas$`higher level`)[2]<-"ND"
+names(spp_lev_matas$`higher level`)[11]<-"Betwn"
+names(spp_lev_matas$`higher level`)[12]<-"W.Betwn"
+names(spp_lev_matas$`higher level`)[13]<-"Closn"
+names(spp_lev_matas$`higher level`)[14]<-"W.Closn"
+
+knitr::kable((spp_lev_matas$`higher level`[,c(2,11,12,13,14)]))
+
+```
+
+```{r,echo=FALSE}
+
+names(spp_lev_matas$`lower level`)[2]<-"ND"
+names(spp_lev_matas$`lower level`)[11]<-"Betwn"
+names(spp_lev_matas$`lower level`)[12]<-"W.Betwn"
+names(spp_lev_matas$`lower level`)[13]<-"Closn"
+names(spp_lev_matas$`lower level`)[14]<-"W.Closn"
+knitr::kable((spp_lev_matas$`lower level`[,c(2,11,12,13,14)]))
+```
+
+
+#####**Step 3.2.** Network measures
 
 * **Link level** computes the contribution of each species to the overall nestedness.
 
@@ -78,24 +139,30 @@ There are three different levels this can be achieved at: the entire web (using 
 
 + **Web Assymethry:** Balance between numbers in the two levels W = (I– J)/(I+J). Positive numbers indicate more lower-trophic level species, negative more higher-trophic level species; rescaled to [–1, 1] (see Blüthgen et al. 2007).
 
-```{r, echo=FALSE}
-clos_mart<-closeness_w(mart, gconly=TRUE, precomp.dist=NULL, alpha=1)
-bet_mart<-betweenness_w(mart)
+```{r, message=F, cache=F, echo=F, include = FALSE}
 mod_mart<-computeModules(mart)
-spp_lev_mart<-specieslevel(mart)
 link_lev_mart<-linklevel(mart)
-net_lev_mart<-linklevel(mart)
 
-net_lev_mart
-
-clos_matas<-closeness_w(matas, gconly=TRUE, precomp.dist=NULL, alpha=1)
-bet_matas<-betweenness_w(matas)
 mod_matas<-computeModules(matas)
-spp_lev_matas<-specieslevel(matas)
 link_lev_matas<-linklevel(matas)
-net_lev_matas<-linklevel(matas)
 ```
-#####**Step 3.1.** Ploting modules in the networks
+
+```{r}
+#Martinazo
+networklevel(mart)
+```
+
+```{r}
+#Matasgordas
+networklevel(matas)
+```
+
+&nbsp;
+&nbsp;
+
+
+
+#####**Step 3.3.** Ploting modules in the networks
 
 ```{r, echo=FALSE}
 par(mfrow=c(1,2))
@@ -160,38 +227,118 @@ plotweb(mart_f, col.low=c(gray(seq(0.1,1,length=24))), col.high=c("white","white
 plotweb(matas_f, col.low=c(gray(seq(0.1,1,length=39))), col.high=c("white","white","gray30","gray30","black","black","darkgray"), method="normal", text.rot=90,low.lablength=10, high.lablength=8)
 ```
 
-####**Step 3.** Calculate different indexes of a network.[^2]
+####**Step 3.** Calculate indices describing network topography. 
+
+There are three different levels this can be achieved at: the entire web (using function networklevel), at the level of each group (also using function networklevel) or the individual species (using function specieslevel). One of the best measures in network analysis is the centrality. This index refer to the relative importance of every element to structure the system and there are three measures of closeness useful for us.[^2]
+&nbsp;
+#####**Step 3.1.** Centrality measures
+
+* **Relative degree.** 
 
 * **Closeness** 
 
 * **Betweenness** 
 
-* **Species level** 
-
-* **Link level** 
-
-```{r, echo=FALSE}
-clos_mart_f<-closeness_w(mart_f, gconly=TRUE, precomp.dist=NULL, alpha=1)
-bet_mart_f<-betweenness_w(mart_f)
-mod_mart_f<-computeModules(mart_f)
+&nbsp;
+```
 spp_lev_mart_f<-specieslevel(mart_f)
-link_lev_mart_f<-linklevel(mart_f)
+spp_lev_matas_f<-specieslevel(matas)
+```
 
-clos_matas_f<-closeness_w(matas_f, gconly=TRUE, precomp.dist=NULL, alpha=1)
-bet_matas_f<-betweenness_w(matas_f)
-mod_matas_f<-computeModules(matas_f)
+```{r, message=F, cache=F, echo=F, include = FALSE}
+spp_lev_mart_f<-specieslevel(mart_f)
 spp_lev_matas_f<-specieslevel(matas_f)
-link_lev_matas_f<-linklevel(matas_f)
+```
+
+&nbsp;
+Martinazo
+```{r,echo=FALSE}
+names(spp_lev_mart_f$`higher level`)[2]<-"ND"
+names(spp_lev_mart_f$`higher level`)[11]<-"Betwn"
+names(spp_lev_mart_f$`higher level`)[12]<-"W.Betwn"
+names(spp_lev_mart_f$`higher level`)[13]<-"Closn"
+names(spp_lev_mart_f$`higher level`)[14]<-"W.Closn"
+
+knitr::kable((spp_lev_mart_f$`higher level`[,c(2,11,12,13,14)]))
+
 ```
 &nbsp;
+```{r,echo=FALSE}
 
-#####**Step 3.1.** Ploting modules in the networks
+names(spp_lev_mart_f$`lower level`)[2]<-"ND"
+names(spp_lev_mart_f$`lower level`)[11]<-"Betwn"
+names(spp_lev_mart_f$`lower level`)[12]<-"W.Betwn"
+names(spp_lev_mart_f$`lower level`)[13]<-"Closn"
+names(spp_lev_mart_f$`lower level`)[14]<-"W.Closn"
+knitr::kable((spp_lev_mart_f$`lower level`[,c(2,11,12,13,14)]))
+```
+Matasgordas
+```{r,echo=FALSE}
+names(spp_lev_matas_f$`higher level`)[2]<-"ND"
+names(spp_lev_matas_f$`higher level`)[11]<-"Betwn"
+names(spp_lev_matas_f$`higher level`)[12]<-"W.Betwn"
+names(spp_lev_matas_f$`higher level`)[13]<-"Closn"
+names(spp_lev_matas_f$`higher level`)[14]<-"W.Closn"
+
+knitr::kable((spp_lev_matas_f$`higher level`[,c(2,11,12,13,14)]))
+
+```
+
+```{r,echo=FALSE}
+
+names(spp_lev_matas_f$`lower level`)[2]<-"ND"
+names(spp_lev_matas_f$`lower level`)[11]<-"Betwn"
+names(spp_lev_matas_f$`lower level`)[12]<-"W.Betwn"
+names(spp_lev_matas_f$`lower level`)[13]<-"Closn"
+names(spp_lev_matas_f$`lower level`)[14]<-"W.Closn"
+knitr::kable((spp_lev_matas_f$`lower level`[,c(2,11,12,13,14)]))
+```
+
+
+#####**Step 3.2.** Network measures
+
+* **Link level** computes the contribution of each species to the overall nestedness.
+
+* **Network level** Analysis of bipartite webs at the level of the entire network
+
++ **Connectance:** Realized proportion of possible links. C = L/(IJ). This is the standardized number of species combinations often used in co-occurrence analyses (Gotelli and Graves 1996); also identical to 2-species motifs sensu Milo et al. (2002).
+
++ **Cluster coefficient:** Mean, across all species, of the number of realized links divided by the number of possible links for each species (i.e. average per-species connectance).
+
++ **Web Assymethry:** Balance between numbers in the two levels W = (I– J)/(I+J). Positive numbers indicate more lower-trophic level species, negative more higher-trophic level species; rescaled to [–1, 1] (see Blüthgen et al. 2007).
+
+```{r, message=F, cache=F, echo=F, include = FALSE}
+mod_mart_f<-computeModules(mart_f)
+link_lev_mart_f<-linklevel(mart_f)
+
+mod_matas_f<-computeModules(matas_f)
+link_lev_matas<-linklevel(matas_f)
+```
+
+```{r}
+#Martinazo
+networklevel(mart_f)
+```
+
+```{r}
+#Matasgordas
+networklevel(matas_f)
+```
+
+
+
+&nbsp;
+
+#####**Step 3.3.** Ploting modules in the networks
 
 ```{r, echo=FALSE}
 par(mfrow=c(1,2))
 plotModuleWeb(mod_mart_f)
 plotModuleWeb(mod_matas_f)
 ```
+&nbsp;
+&nbsp;
+&nbsp;
 &nbsp;
 &nbsp;
 &nbsp;

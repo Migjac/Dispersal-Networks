@@ -20,39 +20,33 @@ plotweb(matas, col.low=c(gray(seq(0.1,1,length=42))), col.high=c("white","white"
 
 ####**Step 3.** Calculate indices describing network topography. 
 
-clos_mart<-closeness_w(mart, gconly=TRUE, precomp.dist=NULL, alpha=1)
-bet_mart<-betweenness_w(mart)
+#Centrality measures
+
+#Degree
+specieslevel(mart,index="normalised degree")
+specieslevel(matas,index="normalised degree")
+
+#Closeness
+specieslevel(mart,index="closeness")
+specieslevel(matas,index="closeness")
+
+#Betweeness
+specieslevel(mart,index="betweenness")
+specieslevel(matas,index="betweenness")
+
+
+##Networks analysis. Network topology indexes
+
+networklevel(mart)
+networklevel(matas)
+
+#Modularity
 mod_mart<-computeModules(mart)
-spp_lev_mart<-specieslevel(mart,PDI.normalise=FALSE)
-link_lev_mart<-linklevel(mart)
-net_lev_mart<-networklevel(mart)
-
-net_lev_mart
-clos_mart
-bet_mart
-mod_mart
-spp_lev_mart
-link_lev_mart
-net_lev_mart
-
-computeModules(mart)
-
-clos_matas<-closeness_w(matas, gconly=TRUE, precomp.dist=NULL, alpha=1)
-bet_matas<-betweenness_w(matas)
 mod_matas<-computeModules(matas)
-spp_lev_matas<-specieslevel(matas, PDI.normalise=FALSE)
-link_lev_matas<-linklevel(matas)
-net_lev_matas<-networklevel(matas)
-strength(mart, type="Barrat")
-strength(matas, type = "Barrat")
 
-clos_matas
-bet_matas
-mod_matas
-spp_lev_matas
-link_lev_matas
-net_lev_matas
-computeModules(matas)
+#Dependence
+linklevel(mart)
+linklevel(matas)
 
 
 #Coping the results to my folder in local repository**
