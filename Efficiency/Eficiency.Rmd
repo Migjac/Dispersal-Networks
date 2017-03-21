@@ -1,0 +1,263 @@
+---
+title: "Frugivore efficiency network analysis"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+####**Step 1. **Open Martinazo and Matasgordas efficiency matrix
+
+Opening a matrix file with weighted links with frugivores fruit remotion efficiency in individual plants. The data set to construct this matrix was the resul of dividing *fruits/day and visits/day= fruits/visit*
+
+
+```{r}
+#Martinazo
+mart_e<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/Dispersal-Networks/Efficiency/mart_eff.csv",header=TRUE,check.names=FALSE,row.names=1)
+
+#Matasgordas
+matas_e<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/Dispersal-Networks/Efficiency/matas_eff.csv",header=TRUE,check.names=FALSE,row.names=1)
+```
+
+&nbsp;
+
+####**Step 2.** Using "bipartite" package
+&nbsp;
+
+```
+library(bipartite)
+```
+&nbsp;
+
+```{r, message=F, cache=F, echo=F, include = FALSE}
+library(bipartite)
+```
+&nbsp;
+&nbsp;
+
+#####*Step 2.1.* Ploting the web.
+Creates a bipartite network were the high level will be represented by the frugivores and low level to each individual plant. *Links are weigthed with the frugivory efficiency fruit animal/individual plant*.[^2] 
+
+[^2]: <span style="color:gray">For more information see previous analysis
+
+```{r,echo=FALSE}
+#Martinazo Bipartite network
+par(mfrow = c(2,1))
+plotweb(mart_e, col.low=c(gray(seq(0.1,1,length=24))), col.high=c("white","white","gray30","gray30","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+
+#Matasgordas Bipartite Network
+plotweb(matas_e, col.low=c(gray(seq(0.1,1,length=39))), col.high=c("white","white","gray30","gray30","black","black","darkgray"), method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+```
+
+####**Step 3.** Calculate indices describing network topography. 
+
+There are three different levels this can be achieved at: the entire web (using function networklevel), at the level of each group (also using function networklevel) or the individual species (using function specieslevel). One of the best measures in network analysis is the centrality. This index refer to the relative importance of every element to structure the system and there are three measures of closeness useful for us.[^2]
+&nbsp;
+#####**Step 3.1.** Centrality measures
+
+* **Relative degree.** 
+
+* **Closeness** 
+
+* **Betweenness** 
+
+&nbsp;
+```
+spp_lev_mart_f<-specieslevel(mart_e)
+spp_lev_matas_f<-specieslevel(matas_e)
+```
+
+```{r Species level, message=F, cache=F, echo=F, include = FALSE}
+spp_lev_mart_e<-specieslevel(mart_e)
+spp_lev_matas_e<-specieslevel(matas_e)
+```
+
+&nbsp;
+Martinazo
+```{r,echo=FALSE}
+names(spp_lev_mart_e$`higher level`)[2]<-"ND"
+names(spp_lev_mart_e$`higher level`)[11]<-"Betwn"
+names(spp_lev_mart_e$`higher level`)[12]<-"W.Betwn"
+names(spp_lev_mart_e$`higher level`)[13]<-"Closn"
+names(spp_lev_mart_e$`higher level`)[14]<-"W.Closn"
+
+knitr::kable((spp_lev_mart_e$`higher level`[,c(2,11,12,13,14)]))
+
+```
+&nbsp;
+```{r,echo=FALSE}
+
+names(spp_lev_mart_e$`lower level`)[2]<-"ND"
+names(spp_lev_mart_e$`lower level`)[11]<-"Betwn"
+names(spp_lev_mart_e$`lower level`)[12]<-"W.Betwn"
+names(spp_lev_mart_e$`lower level`)[13]<-"Closn"
+names(spp_lev_mart_e$`lower level`)[14]<-"W.Closn"
+knitr::kable((spp_lev_mart_e$`lower level`[,c(2,11,12,13,14)]))
+```
+Matasgordas
+```{r,echo=FALSE}
+names(spp_lev_matas_e$`higher level`)[2]<-"ND"
+names(spp_lev_matas_e$`higher level`)[11]<-"Betwn"
+names(spp_lev_matas_e$`higher level`)[12]<-"W.Betwn"
+names(spp_lev_matas_e$`higher level`)[13]<-"Closn"
+names(spp_lev_matas_e$`higher level`)[14]<-"W.Closn"
+
+knitr::kable((spp_lev_matas_e$`higher level`[,c(2,11,12,13,14)]))
+
+```
+
+```{r,echo=FALSE}
+
+names(spp_lev_matas_e$`lower level`)[2]<-"ND"
+names(spp_lev_matas_e$`lower level`)[11]<-"Betwn"
+names(spp_lev_matas_e$`lower level`)[12]<-"W.Betwn"
+names(spp_lev_matas_e$`lower level`)[13]<-"Closn"
+names(spp_lev_matas_e$`lower level`)[14]<-"W.Closn"
+knitr::kable((spp_lev_matas_e$`lower level`[,c(2,11,12,13,14)]))
+```
+
+
+#####**Step 3.2.** Network measures
+
+* **Link level** computes the contribution of each species to the overall nestedness.
+
+* **Network level** Analysis of bipartite webs at the level of the entire network
+
++ **Connectance:** Realized proportion of possible links. C = L/(IJ). This is the standardized number of species combinations often used in co-occurrence analyses (Gotelli and Graves 1996); also identical to 2-species motifs sensu Milo et al. (2002).
+
++ **Cluster coefficient:** Mean, across all species, of the number of realized links divided by the number of possible links for each species (i.e. average per-species connectance).
+
++ **Web Assymethry:** Balance between numbers in the two levels W = (I– J)/(I+J). Positive numbers indicate more lower-trophic level species, negative more higher-trophic level species; rescaled to [–1, 1] (see Blüthgen et al. 2007).
+
+```{r, message=F, cache=F, echo=F, include = FALSE}
+mod_mart_e<-computeModules(mart_e)
+link_lev_mart_e<-linklevel(mart_e)
+
+mod_matas_e<-computeModules(matas_e)
+link_lev_matas_e<-linklevel(matas_e)
+```
+
+```{r}
+#Martinazo
+networklevel(mart_e)
+```
+
+```{r}
+#Matasgordas
+networklevel(matas_e)
+```
+
+
+
+&nbsp;
+
+#####**Step 3.3.** Ploting modules in the networks
+
+```{r Module plots, echo=FALSE}
+par(mfrow=c(1,2))
+plotModuleWeb(mod_mart_e)
+plotModuleWeb(mod_matas_e)
+```
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
+####**Step 4.** Gathering Martinazo and Matasgordas' matrixs as one; plants are ordered from more to less aggregated
+
+```{r,echo=F}
+par(mfrow=c(1,1))
+mart_matas_e<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/Dispersal-Networks/Efficiency/mart_matas_eff.csv",header=TRUE,check.names=FALSE,row.names=1)
+plotweb(mart_matas_e, col.low=c(gray(seq(0.1,1,length=56))), col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+```
+
+&nbsp;
+```{r,echo=FALSE}
+
+names(spp_lev_mart_matas_e$`lower level`)[2]<-"ND"
+names(spp_lev_mart_matas_e$`lower level`)[11]<-"Betwn"
+names(spp_lev_mart_matas_e$`lower level`)[12]<-"W.Betwn"
+names(spp_lev_mart_matas_e$`lower level`)[13]<-"Closn"
+names(spp_lev_mart_matas_e$`lower level`)[14]<-"W.Closn"
+knitr::kable((spp_lev_mart_matas_e$`lower level`[,c(2,11,12,13,14)]))
+```
+Matasgordas
+```{r,echo=FALSE}
+names(spp_lev_mart_matas_e$`higher level`)[2]<-"ND"
+names(spp_lev_mart_matas_e$`higher level`)[11]<-"Betwn"
+names(spp_lev_mart_matas_e$`higher level`)[12]<-"W.Betwn"
+names(spp_lev_mart_matas_e$`higher level`)[13]<-"Closn"
+names(spp_lev_mart_matas_e$`higher level`)[14]<-"W.Closn"
+
+knitr::kable((spp_lev_mart_matas_e$`higher level`[,c(2,11,12,13,14)]))
+
+```
+
+```{r, message=F, cache=F, echo=F, include = FALSE}
+mod_mart_e<-computeModules(mart_matas_e)
+link_lev_mart_e<-linklevel(mart_matas_e)
+```
+
+```{r}
+networklevel(mart_matas_e)
+```
+
+
+####**Step 5.** Changing the matrix by adding unknown to "rats" visitors
+
+```{r}
+#Martinazo
+mart_fnun<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/Dispersal-Networks/Unknown-Rat/mart_fruits_no_unk.csv",header=TRUE,check.names=FALSE,row.names=1)
+
+#Matasgordas
+matas_fnun<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/matas_fruits_no_unk.csv",header=TRUE,check.names=FALSE,row.names=1)
+```
+&nbsp;
+
+#####Bipartite plot
+
+```{r,echo=FALSE}
+#Martinazo Bipartite Network
+par(mfrow=c(2,1))
+plotweb(mart_fnun, col.low=c(gray(seq(0.1,1,length=22))), col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+
+#Matasgordas Bipartite Network
+plotweb(matas_fnun, col.low=c(gray(seq(0.1,1,length=30))), col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+```
