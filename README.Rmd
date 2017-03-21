@@ -14,6 +14,7 @@
 
 &nbsp;
 
+
 ####**Step 1. **Open Martinazo and Matasgordas matrix
 
 
@@ -76,7 +77,7 @@ spp_lev_mart<-specieslevel(mart)
 spp_lev_mart<-specieslevel(matas)
 ```
 
-```{r, message=F, cache=F, echo=F, include = FALSE}
+```{r Splevel, message=F, cache=F, echo=F, include = FALSE}
 spp_lev_mart<-specieslevel(mart)
 spp_lev_matas<-specieslevel(matas)
 ```
@@ -172,16 +173,56 @@ plotModuleWeb(mod_matas)
 
 &nbsp;
 
->**Coping the results to my folder in local repository**
+>*Coping the results to my folder in local repository. We'll use this file as the data.frame to analyse the centrality and its relation to the aggregation level and plants density.*
 
 ```
 write.table(clos_mart, "/Users/apple/Desktop/Palmito/Postdoc-Interaction Networks/Dispersal Networks/clos_mart.txt", sep="\t")
 ```
 
+####**Step 4.** Gathering Martinazo and Matasgordas' matrixs as one; plants are ordered from more to less aggregated
+
+```{r,echo=F}
+par(mfrow=c(1,1))
+mart_matas_visits<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/mart_matas_visits.csv",header=TRUE,check.names=FALSE,row.names=1)
+plotweb(mart_matas_visits, col.low=c(gray(seq(0.1,1,length=63))),col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+```
+&nbsp;
+
+#####**Step 4.1.** Centrality measures
+
+* **Relative degree.** 
+
+* **Closeness** 
+
+* **Betweenness** 
+
+```{r,echo=FALSE}
+HLspplvlmartmatasvisits<-specieslevel(mart_matas_visits)
+martmatasHL<-HLspplvlmartmatasvisits$`higher level`[,c(2,11,12,13,14)]
+LLspplvlmartmatasvisits<-specieslevel(mart_matas_visits)
+martmatasLL<-LLspplvlmartmatasvisits$`lower level`[,c(2,11,12,13,14)]
+
+knitr::kable((spp_lev_mart$`higher level`[,c(2,11,12,13,14)]))
+
+knitr::kable((spp_lev_mart$`lower level`[,c(2,11,12,13,14)]))
+```
+
+
+
+```{r}
+write.csv(martmatasHL, file = "martmatasHL.csv")
+write.csv(martmatasLL, file = "martmatasLL.csv")
+
+```
+
+&nbsp;
+&nbsp;
+&nbsp;
+
 --------------------------------------------------------
 
 
-##*Fruit remotion rates*
+##*Fruit removal rates*
 
 -------------------------
 
@@ -408,3 +449,31 @@ plotweb(mart_fnun, col.low=c(gray(seq(0.1,1,length=22))), col.high=c("white","wh
 #Matasgordas Bipartite Network
 plotweb(matas_fnun, col.low=c(gray(seq(0.1,1,length=30))), col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
 ```
+
+####**Step 6.**Calculate aggregation degree of given plants via neares neighbour function in "spatstat package"
+
+####**Step 6.1** Using "bipartite" package
+&nbsp;
+
+```
+library(spatstat)
+```
+&nbsp;
+
+```{r, message=F, cache=F, echo=F, include = FALSE}
+library(spatstat)
+```
+
+
+```{r}
+#Martinazo
+martcoord<-read.table("~/Desktop/Palmito/Postdoc-Interaction Networks/Dispersal-Networks/Coordinates/MartinazoLatLongUTM.txt",header=TRUE)
+nnmart<-nndist(martcoord$x, martcoord$y)
+
+matascoord<-read.table("~/Desktop/Palmito/Postdoc-Interaction Networks/Dispersal-Networks/Coordinates/MatasgordasTodasLatLong2_UTM_ETRS89_30N.txt",header=TRUE)
+nnmatas<-nndist(matascoord$x_proj, matascoord$y_proj)
+```
+
+
+
+
