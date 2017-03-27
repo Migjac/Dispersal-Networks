@@ -33,6 +33,14 @@ par(mfrow = c(2,1))
 plotweb(mart, col.low=c(gray(seq(0.1,1,length=24))),col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8) 
 plotweb(matas, col.low=c(gray(seq(0.1,1,length=42))), col.high=c("white","white","gray30","gray30","black","black","darkgray"), method="normal", text.rot=90,low.lablength=10, high.lablength=8)
 
+par(mfrow = c(1,2))
+gplot(mart, "graph",vertex.col="gray", edge.col="grey75", mode="circle",vertex.cex=log(deg), main="Martinazo")
+deg<-degree(mart,gmode="graph")
+get.vertex.attribute(mart,"vertex.names")
+str(mart)
+
+gplot(matas, main="Matasgordas")
+
 ####**Step 3.** Calculate indices describing network topography. 
 
 ##**Step 3.** Calculate different indexes of a network.
@@ -42,14 +50,16 @@ plotweb(matas, col.low=c(gray(seq(0.1,1,length=42))), col.high=c("white","white"
 #Degree, Betweeness and Closeness
 
 HLspplvlmart<-specieslevel(mart)
-HLspplvlmart$`higher level`[,c(2,11,12,13,14)]
+HLspplvlmart$`higher level`[,c(2,3,7,10,11,12,13,14,17)]
 LLspplvlmart<-specieslevel(mart)
-LLspplvlmart$`lower level`[,c(2,11,12,13,14)]
+LLspplvlmart$`lower level`[,c(2,3,7,10,11,12,13,14,17)]
+
+LLspplvlmart
 
 spplvlmatas<-specieslevel(matas)
-spplvlmatas$`higher level`[,c(2,11,12,13,14)]
+spplvlmatas$`higher level`[,c(2,3,7,10,11,12,13,14,17)]
 LLspplvlmatas<-specieslevel(matas)
-LLspplvlmatas$`lower level`[,c(2,11,12,13,14)]
+LLspplvlmatas$`lower level`[,c(2,3,7,10,11,12,13,14,17)]
 
 
 
@@ -84,10 +94,10 @@ plotweb(mart_matas_visits, col.low=c(gray(seq(0.1,1,length=63))),col.high=c("whi
 #Degree, Betweeness and Closeness
 
 HLspplvlmartmatasvisits<-specieslevel(mart_matas_visits)
-martmatasHL<-HLspplvlmartmatasvisits$`higher level`[,c(2,11,12,13,14)]
+martmatasHL<-HLspplvlmartmatasvisits$`higher level`[,c(2,3,7,10,11,12,13,14,17)]
 LLspplvlmartmatasvisits<-specieslevel(mart_matas_visits)
-martmatasLL<-LLspplvlmartmatasvisits$`lower level`[,c(2,11,12,13,14)]
-
+martmatasLL<-LLspplvlmartmatasvisits$`lower level`[,c(1,2,3,7,10,11,12,13,14,17)]
+martmatasLL
 write.csv(martmatasHL, file = "martmatasHL.csv")
 write.csv(martmatasLL, file = "martmatasLL.csv")
 
@@ -96,9 +106,21 @@ write.csv(martmatasLL, file = "martmatasLL.csv")
 
 library(ISLR)
 #Martinazo
-mart_wv<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/mart_wv.csv",header=TRUE)
+
+par(mfrow=c(1,1))
+mart_wv<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/mart_wv.csv",header=TRUE,check.names=FALSE,row.names=1)
 mart_wv
-mart_v<-glm(nd~nn+ x+ y, data = mart_wv)
+
+
+mart_corr <- mart_wv[c(1:10)]
+mart_corr
+m<-cor(mart_corr, method="kendall")
+corrplot(m, method = "number", type = "lower")
+m
+
+
+
+mart_v<-glm(nd~nn+ dens + del.area, data = mart_wv)
 par(mfrow=c(3,3))
 plot(mart_v)
 summary(mart_v)

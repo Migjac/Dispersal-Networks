@@ -37,124 +37,73 @@ library(bipartite)
 &nbsp;
 
 #####*Step 2.1.* Ploting the web.
-Creates a bipartite network were the high level will be represented by the frugivores and low level to each individual plant. *Links are weigthed with the frugivory efficiency fruit animal/individual plant*.[^2] 
+Creates a bipartite network were the high level will be represented by the frugivores and low level to each individual plant. *Links are weigthed with the frugivory efficiency fruit animal/individual plant/visits per day*.[^2] 
 
 [^2]: <span style="color:gray">For more information see previous analysis
 
 ```{r,echo=FALSE}
 #Martinazo Bipartite network
 par(mfrow = c(2,1))
-plotweb(mart_e, col.low=c(gray(seq(0.1,1,length=24))), col.high=c("white","white","gray30","gray30","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+plotweb(mart_e, col.low=c(gray(seq(0.1,1,length=22))), col.high=c("white","white","gray30","gray30","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
 
 #Matasgordas Bipartite Network
-plotweb(matas_e, col.low=c(gray(seq(0.1,1,length=39))), col.high=c("white","white","gray30","gray30","black","black","darkgray"), method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+plotweb(matas_e, col.low=c(gray(seq(0.1,1,length=34))), col.high=c("white","white","gray30","gray30","black","black","darkgray"), method="normal", text.rot=90,low.lablength=10, high.lablength=8)
 ```
+
+&nbsp;
+&nbsp;
 
 ####**Step 3.** Calculate indices describing network topography. 
 
-There are three different levels this can be achieved at: the entire web (using function networklevel), at the level of each group (also using function networklevel) or the individual species (using function specieslevel). One of the best measures in network analysis is the centrality. This index refer to the relative importance of every element to structure the system and there are three measures of closeness useful for us.[^2]
+#####**Step 4.1.** Network measures
 &nbsp;
-#####**Step 3.1.** Centrality measures
-
-* **Relative degree.** 
-
-* **Closeness** 
-
-* **Betweenness** 
-
-&nbsp;
-```
-spp_lev_mart_f<-specieslevel(mart_e)
-spp_lev_matas_f<-specieslevel(matas_e)
-```
-
-```{r Species level, message=F, cache=F, echo=F, include = FALSE}
-spp_lev_mart_e<-specieslevel(mart_e)
-spp_lev_matas_e<-specieslevel(matas_e)
-```
-
-&nbsp;
-Martinazo
-```{r,echo=FALSE}
-names(spp_lev_mart_e$`higher level`)[2]<-"ND"
-names(spp_lev_mart_e$`higher level`)[11]<-"Betwn"
-names(spp_lev_mart_e$`higher level`)[12]<-"W.Betwn"
-names(spp_lev_mart_e$`higher level`)[13]<-"Closn"
-names(spp_lev_mart_e$`higher level`)[14]<-"W.Closn"
-
-knitr::kable((spp_lev_mart_e$`higher level`[,c(2,11,12,13,14)]))
-
-```
-&nbsp;
-```{r,echo=FALSE}
-
-names(spp_lev_mart_e$`lower level`)[2]<-"ND"
-names(spp_lev_mart_e$`lower level`)[11]<-"Betwn"
-names(spp_lev_mart_e$`lower level`)[12]<-"W.Betwn"
-names(spp_lev_mart_e$`lower level`)[13]<-"Closn"
-names(spp_lev_mart_e$`lower level`)[14]<-"W.Closn"
-knitr::kable((spp_lev_mart_e$`lower level`[,c(2,11,12,13,14)]))
-```
-Matasgordas
-```{r,echo=FALSE}
-names(spp_lev_matas_e$`higher level`)[2]<-"ND"
-names(spp_lev_matas_e$`higher level`)[11]<-"Betwn"
-names(spp_lev_matas_e$`higher level`)[12]<-"W.Betwn"
-names(spp_lev_matas_e$`higher level`)[13]<-"Closn"
-names(spp_lev_matas_e$`higher level`)[14]<-"W.Closn"
-
-knitr::kable((spp_lev_matas_e$`higher level`[,c(2,11,12,13,14)]))
-
-```
-
-```{r,echo=FALSE}
-
-names(spp_lev_matas_e$`lower level`)[2]<-"ND"
-names(spp_lev_matas_e$`lower level`)[11]<-"Betwn"
-names(spp_lev_matas_e$`lower level`)[12]<-"W.Betwn"
-names(spp_lev_matas_e$`lower level`)[13]<-"Closn"
-names(spp_lev_matas_e$`lower level`)[14]<-"W.Closn"
-knitr::kable((spp_lev_matas_e$`lower level`[,c(2,11,12,13,14)]))
-```
-
-
-#####**Step 3.2.** Network measures
-
-* **Link level** computes the contribution of each species to the overall nestedness.
 
 * **Network level** Analysis of bipartite webs at the level of the entire network
 
-+ **Connectance:** Realized proportion of possible links. C = L/(IJ). This is the standardized number of species combinations often used in co-occurrence analyses (Gotelli and Graves 1996); also identical to 2-species motifs sensu Milo et al. (2002).
++ *Connectance:* Degree of specialization of the netwwork, meaure the proportion of possible links. C = L/(IJ). This is the standardized number of species combinations often used in co-occurrence analyses (Gotelli and Graves 1996); also identical to 2-species motifs sensu Milo et al. (2002).
 
-+ **Cluster coefficient:** Mean, across all species, of the number of realized links divided by the number of possible links for each species (i.e. average per-species connectance).
++ *Cluster coefficient:* Mean, across all species, of the number of realized links divided by the number of possible links for each species (i.e. average per-species connectance).
 
-+ **Web Assymethry:** Balance between numbers in the two levels W = (I– J)/(I+J). Positive numbers indicate more lower-trophic level species, negative more higher-trophic level species; rescaled to [–1, 1] (see Blüthgen et al. 2007).
++ *Web Assymethry:* Balance between numbers in the two levels W = (I– J)/(I+J). Positive numbers indicate more lower-trophic level species, negative more higher-trophic level species; rescaled to [–1, 1] (see Blüthgen et al. 2007).
 
-```{r, message=F, cache=F, echo=F, include = FALSE}
-mod_mart_e<-computeModules(mart_e)
-link_lev_mart_e<-linklevel(mart_e)
-
-mod_matas_e<-computeModules(matas_e)
-link_lev_matas_e<-linklevel(matas_e)
-```
-
-```{r}
-#Martinazo
-networklevel(mart_e)
-```
-
-```{r}
-#Matasgordas
-networklevel(matas_e)
-```
-
-
++ *Nestednes and Wegihted Nestedness:* Interaction degree between specialists and the subset of species to which the generalists interact 
 
 &nbsp;
 
-#####**Step 3.3.** Ploting modules in the networks
+```{r Networklevel of Martinazo}
+#Martinazo
+networklevel(mart_e, index = c("connectance","web asymmetry","cluster coefficient","nestedness","weighted nestedness"))
+```
 
-```{r Module plots, echo=FALSE}
+```{r Networklevel of Matasgordas}
+#Matasgordas
+networklevel(matas_e,index = c("connectance","web asymmetry","cluster coefficient","nestedness","weighted nestedness"))
+```
+
+```{r Modularity, message=F, cache=T, echo=F, include = FALSE}
+mod_mart_e<-computeModules(mart_e)
+mod_matas_e<-computeModules(matas_e)
+```
+&nbsp;
+
++ *Modularity:* Identify modules of closely interecting frugivores. Also test to what extent these modules have a spatial component. High modularity values means that the network is more stable.
+
+Martinazo
+```{r Modularity value of Martinazo, echo=FALSE}
+mod_mart_e@likelihood
+```
+Matasgordas
+```{r Modularity value of Matasgordas}
+mod_matas_e@likelihood
+```
+Modularity in Matasgordas (0.569946) than Martinazo (0.500577)
+
+&nbsp;
+&nbsp;
+
+#####Ploting modules in the networks
+
+```{r plots of the visit modules, echo=FALSE}
 par(mfrow=c(1,2))
 plotModuleWeb(mod_mart_e)
 plotModuleWeb(mod_matas_e)
@@ -164,100 +113,170 @@ plotModuleWeb(mod_matas_e)
 &nbsp;
 &nbsp;
 &nbsp;
+
+Figure 3. 
+
 &nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
+
+
+
+
+&nbsp
+* **Link level.** Interaction variance between nodes. The outcome is a matrix with dependence values. Computes the contribution of each species to the overall nestedness.
+
+```{r link level of each population}
+link_lev_mart<-linklevel(mart_e)
+link_lev_matas<-linklevel(matas_e)
+```
+
 &nbsp;
 &nbsp;
 
-####**Step 4.** Gathering Martinazo and Matasgordas' matrixs as one; plants are ordered from more to less aggregated
 
-```{r,echo=F}
+&nbsp;
+
+#####**Step 5.**Calculate the topography of the nodes and their relative importance to the network. Information that we can relate to the aggregation level of this plants through GLM or GAM.
+
+There are three different levels this can be achieved at: the entire web (using function networklevel), at the level of each group (also using function networklevel) or the individual species (using function specieslevel). 
+
+* **Relative degree.** It is a centrality measure. Proportion of interactions in relation to the potential partners in the network. Importance with the number of plants or animals with which they interact. High values in individual plants in our system is related to "more attractiveness". (qualitative characteristic of the node) interact or not
+
+* **Species strength.** (Dorman, 2011). Describe how much the plants depends on the visits by a particular animal. Importance of the **plant** given by the porportion of visits of each animal. Instead, the values for **animals** tell us the importance of each animal given the proportion of visits that they made. 
+
+* **Species Specificity.** Coefficient of variation of interactions, normalised to values between 0 and 1. Values of 0 indicate low, those of 1 a high variability (and hence suggesting low and high specificity). We can determine if certain **plants** have high visitation and fruit removal by animals or low. Instead, for **animals** we can determine if they have a high efficiency or low. (quantitative index). The difference in this index is that uses the "visitation values "efficiency" of each interaction.
+
+* **Node specialisation index.** Another measure of specialisation, based on the path length between any two higher-trophic level species. For instance, species sharing hosts/prey have an FS-value of 1. It is a purely qualitative measure. Smaller the values, the more directly type A species are linked with type B species in network, and the less strict is the functional specialization.level of interdependence between plant and frugivore species.
+
+* **Effective partners.** The effective number of partners, if each partner was equally common. In our study is only useful for plants.
+
+&nbsp;
+```
+spp_lev_mart<-specieslevel(mart_e)
+spp_lev_mart<-specieslevel(matas_e)
+```
+&nbsp;
+&nbsp;
+
+####Martinazo
+```{r Martinazo visits node characteristics}
+HLspplvlmart<-specieslevel(mart_e)
+HLspplvlmart$`higher level`[,c(2,3,8,10)]
+LLspplvlmart<-specieslevel(mart_e)
+LLspplvlmart$`lower level`[,c(2,3,7,10,17)]
+```
+&nbsp;
+
+####Matasgordas
+```{r Matasgordas visits node characteristics, echo=FALSE}
+spplvlmatas<-specieslevel(matas_e)
+spplvlmatas$`higher level`[,c(2,3,8,10)]
+LLspplvlmatas<-specieslevel(matas_e)
+LLspplvlmatas$`lower level`[,c(2,3,7,10,17)]
+```
+
+&nbsp;
+####**Step 6.** Gathering Martinazo and Matasgordas' matrixs as one; plants are ordered from more to less aggregated
+
+```{r Network of both populations,echo=F}
 par(mfrow=c(1,1))
 mart_matas_e<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/Dispersal-Networks/Efficiency/mart_matas_eff.csv",header=TRUE,check.names=FALSE,row.names=1)
-plotweb(mart_matas_e, col.low=c(gray(seq(0.1,1,length=56))), col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+plotweb(mart_matas_e, col.low=c(gray(seq(0.1,1,length=63))),col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+```
+&nbsp;
+&nbsp;
+&nbsp;
+
+
+
+####**Step 6.1** Calculate indices describing network topography of the general network. 
+
+#####**Step 6.1.1** Network measures
+
+* **Network level** Analysis of bipartite webs at the level of the entire network
+
++ *Connectance* 
+
++ *Cluster coefficient* 
+
++ *Web Assymethry*
+
++ *Nestednes and Wegihted Nestedness:*
+
+&nbsp;
+&nbsp;
+
+```{r Networklevel of both populations}
+networklevel(mart_matas_e, index = c("connectance","web asymmetry","cluster coefficient","nestedness","weighted nestedness"))
+```
+
++ *Modularity* 
+
+```{r Modularity in both populations, message=F, cache=T, echo=F, include = FALSE}
+mod_mart_matas_e<-computeModules(mart_matas_e)
+```
+
+
+Matasgordas y Martinazo
+```{r Modularity value of both populations, echo=FALSE}
+mod_mart_matas_e@likelihood
+```
+
+#####Ploting modules in the networks
+
+```{r plots of the modules of both populations in one, echo=FALSE}
+par(mfrow=c(1,1))
+plotModuleWeb(mod_mart_matas_e)
+```
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+
+Figure 3.
+
+&nbsp;
+
+It doesn't make many sense unless the plants have similar characteritics.  Perhaps, the plants are the aggregated ones, however, the results can change due to iteration process.
+
+
+
+&nbsp
+* **Link level.** Interaction variance between nodes. The outcome is a matrix with dependence values. Computes the contribution of each species to the overall nestedness.
+
+```{r link level value of both populations}
+linklevel(mart_matas_e)
 ```
 
 &nbsp;
-```{r,echo=FALSE}
-
-names(spp_lev_mart_matas_e$`lower level`)[2]<-"ND"
-names(spp_lev_mart_matas_e$`lower level`)[11]<-"Betwn"
-names(spp_lev_mart_matas_e$`lower level`)[12]<-"W.Betwn"
-names(spp_lev_mart_matas_e$`lower level`)[13]<-"Closn"
-names(spp_lev_mart_matas_e$`lower level`)[14]<-"W.Closn"
-knitr::kable((spp_lev_mart_matas_e$`lower level`[,c(2,11,12,13,14)]))
-```
-Matasgordas
-```{r,echo=FALSE}
-names(spp_lev_mart_matas_e$`higher level`)[2]<-"ND"
-names(spp_lev_mart_matas_e$`higher level`)[11]<-"Betwn"
-names(spp_lev_mart_matas_e$`higher level`)[12]<-"W.Betwn"
-names(spp_lev_mart_matas_e$`higher level`)[13]<-"Closn"
-names(spp_lev_mart_matas_e$`higher level`)[14]<-"W.Closn"
-
-knitr::kable((spp_lev_mart_matas_e$`higher level`[,c(2,11,12,13,14)]))
-
-```
-
-```{r, message=F, cache=F, echo=F, include = FALSE}
-mod_mart_e<-computeModules(mart_matas_e)
-link_lev_mart_e<-linklevel(mart_matas_e)
-```
-
-```{r}
-networklevel(mart_matas_e)
-```
-
-
-####**Step 5.** Changing the matrix by adding unknown to "rats" visitors
-
-```{r}
-#Martinazo
-mart_fnun<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/Dispersal-Networks/Unknown-Rat/mart_fruits_no_unk.csv",header=TRUE,check.names=FALSE,row.names=1)
-
-#Matasgordas
-matas_fnun<-read.csv("~/Desktop/Palmito/Postdoc-Interaction Networks/matas_fruits_no_unk.csv",header=TRUE,check.names=FALSE,row.names=1)
-```
+&nbsp;
 &nbsp;
 
-#####Bipartite plot
+#####**Step 6.1.2.**Calculate the topography of the nodes and their relative importance to the network. 
 
-```{r,echo=FALSE}
-#Martinazo Bipartite Network
-par(mfrow=c(2,1))
-plotweb(mart_fnun, col.low=c(gray(seq(0.1,1,length=22))), col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+* **Relative degree.** 
 
-#Matasgordas Bipartite Network
-plotweb(matas_fnun, col.low=c(gray(seq(0.1,1,length=30))), col.high=c("white","white","gray30","gray30","black","black","darkgray"),method="normal", text.rot=90,low.lablength=10, high.lablength=8)
+* **Species strength.**  
+
+* **Species Specificity.** 
+
+* **Node specialisation index.** 
+
+* **Effective partners.** 
+
+&nbsp;
 ```
+spp_lev_mart<-specieslevel(mart_matas_e)
+```
+
+```{r Martinazo and Matasgordas visits node characteristics}
+HLspplvlmart<-specieslevel(mart_matas_e)
+HLspplvlmart$`higher level`[,c(2,3,8,10)]
+LLspplvlmart<-specieslevel(mart_matas_e)
+LLspplvlmart$`lower level`[,c(2,3,7,10,17)]
+```
+
+&nbsp;
+&nbsp;
+&nbsp;
+
